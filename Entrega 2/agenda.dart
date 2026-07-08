@@ -165,7 +165,7 @@ class Agenda {
     String telefone = stdin.readLineSync() ?? '';
 
     if (!RegExp(
-        ''
+      r'^(?:\+55\s?)?(?:\(?\d{2}\)?\s?)?(?:9\d{4}[-\s]?\d{4}|\d{4}[-\s]?\d{4})$'
     ).hasMatch(telefone)) {
 
         print('❌ Telefone inválido');

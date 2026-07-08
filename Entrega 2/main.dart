@@ -2,7 +2,7 @@ import 'dart:io';
 import 'agenda.dart';
 import 'contato.dart';
 
-List<Contato> _contatos = [];
+List<Contato> contatos = [];
 
 void main() {
 
