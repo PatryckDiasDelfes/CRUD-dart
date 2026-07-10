@@ -1,4 +1,4 @@
-class Contato {
+abstract class Contato {
 
     String nome;
     String email;

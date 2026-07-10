@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'agenda.dart';
-import 'contato.dart';
+import 'Contatos/contato.dart';
 
-List<Contato> contatos = [];
+List<Contato> _contatos = [];
 
 void main() {
 
@@ -10,9 +10,15 @@ void main() {
 
   while (true) {
     print('''
-     ⩶⩶⩶⩶⩶ AGENDA =======================
-    1 -Adcionar  2 -Listar  3 -Editar  4 -Deletar  5 -Buscar  6 -Sair
-    ''');
+    ==== AGENDA ====
+    1 -Adcionar  
+    2 -Listar  
+    3 -Editar  
+    4 -Deletar  
+    5 -Buscar  
+    6 -Sair
+    '''
+    );
 
     String opcao = stdin.readLineSync() ?? '';
 

@@ -1,32 +1,51 @@
 import 'dart:io';
-import 'contato.dart';
-
+import 'Contatos/contato.dart';
+import 'Contatos/contato_empresarial.dart';
+import 'Contatos/contato_pessoal.dart';
 
 class Agenda {
 
-  List<Contato> contatos = [];
+
+  List<Contato> _contatos = [];
   
+
   bool IndiceValido(int i) {
-  return (i >= 0 && i < contatos.length);
-}
+  return (i >= 0 && i < _contatos.length);
+  }
 
   void listarContatos() {
 
-    if(contatos.isEmpty) {
+  if(_contatos.isEmpty) {
     print('Não possui contado a ser listado');
     return;
-    } for (int i = 0; i < contatos.length; i++) {
-    print(
-        '$i - ${contatos[i].nome} | ${contatos[i].email} | ${contatos[i].telefone}'
-    );
+  }
+
+  for (int i = 0; i < _contatos.length; i++) {
+
+    if (_contatos[i] is ContatoPessoal) {
+      ContatoPessoal contato = _contatos[i] as ContatoPessoal;
+
+      print(
+        '$i - Nome: ${contato.nome} | E-mail: ${contato.email} | Telefone: ${contato.telefone} | CPF: ${contato.cpf}'
+      );
+    } else if (_contatos[i] is ContatoEmpresarial) {
+      ContatoEmpresarial contato = _contatos[i] as ContatoEmpresarial;
+
+      print(
+        '$i - Nome Fantasia: ${contato.nomeFantasia} | Nome: ${contato.nome} | E-mail: ${contato.email} | Telefone: ${contato.telefone} | CNPJ: ${contato.cnpj}'
+      );
     }
+  }
 
   }
 
   void criarContato(){
 
+    stdout.write('Qual o tipo de contato? ( 1 - Pessoal | 2 - Empresarial): ');
+    String tipo = stdin.readLineSync() ?? ""; 
+
     stdout.write('Qual seu nome? ');
-  String nome = stdin.readLineSync() ?? '';
+    String nome = stdin.readLineSync() ?? '';
 
     if(existe(nome)) {
         print('❌ Nome já cadastrado!');
@@ -34,13 +53,30 @@ class Agenda {
     }
 
   String email = validarEmail();
-
   stdout.write('Qual seu telefone? ');
   String telefone = validarTelefone();
 
-    contatos.add(
-        Contato(nome, email, telefone)
+  if (tipo == '1') {
+    stdout.write('CPF: ');
+    String cpf = stdin.readLineSync() ?? '';
+
+    _contatos.add(
+      ContatoPessoal(nome, email, telefone, cpf)
     );
+
+    } else if (tipo == '2') {
+      stdout.write('CNPJ: ');
+      String cnpj = stdin.readLineSync() ?? '';
+      
+      stdout.write('Nome Fantasia: ');
+      String nomeFantasia = stdin.readLineSync() ?? '';
+
+      _contatos.add(
+        ContatoEmpresarial(nome, email, telefone, cnpj, nomeFantasia)
+    );
+  } else {
+    print('❌ Nome já cadastrado!');
+  }
 
   print('✅ Contato adcionado.');
 
@@ -58,18 +94,41 @@ class Agenda {
         return;
     }
 
-    stdout.write('Novo nome: ');
-    String nome = stdin.readLineSync() ?? '';
+  stdout.write('Novo nome: ');
+  String novoNome = stdin.readLineSync() ?? '';
 
-    String email = validarEmail();
+  stdout.write('Novo email: ');
+  String novoEmail = stdin.readLineSync() ?? '';
 
-    stdout.write('Telefone novo: ');
-    String telefone = stdin.readLineSync() ?? '';
+  stdout.write('Novo telefone: ');
+  String novoTelefone = stdin.readLineSync() ?? '';
 
-    contatos[indice].nome = nome;
-    contatos[indice].email = email;
-    contatos[indice].telefone = telefone;
+  _contatos[indice].nome = novoNome;
+  _contatos[indice].email = novoEmail;
+  _contatos[indice].telefone = novoTelefone;
 
+
+
+    if(_contatos[indice] is ContatoPessoal) {
+      ContatoPessoal contato = _contatos[indice] as ContatoPessoal;
+
+      stdout.write('Novo CPF: ');
+      String novoCPF = stdin.readLineSync() ?? '';
+
+      contato.cpf = novoCPF;
+
+    } else if(_contatos[indice] is ContatoEmpresarial) {
+      ContatoEmpresarial contato = _contatos[indice] as ContatoEmpresarial;
+
+      stdout.write('Novo nome fantasia: ');
+      String novoNomeFantasia = stdin.readLineSync() ?? '';
+
+      stdout.write('Novo CNPJ: ');
+      String novoCnpj = stdin.readLineSync() ?? '';
+
+      contato.nomeFantasia = novoNomeFantasia;
+      contato.cnpj = novoCnpj;
+  }
     print('✅ Atualizado com sucesso!');
 
 }
@@ -95,7 +154,7 @@ class Agenda {
 
     }
 
-    contatos.removeAt(indice);
+    _contatos.removeAt(indice);
 
     print('✅ Removido com sucesso');
 
@@ -108,11 +167,11 @@ class Agenda {
 
     bool achou = false;
 
-    for (int i = 0; i < contatos.length; i++) {
+    for (int i = 0; i < _contatos.length; i++) {
 
-        if  (contatos[i].nome.toLowerCase().contains(busca)){
+        if  (_contatos[i].nome.toLowerCase().contains(busca)){
 
-        print('$i - ${contatos[i].nome}  |  ${contatos[i].email}  |  ${contatos[i].telefone}');
+        print('$i - ${_contatos[i].nome}  |  ${_contatos[i].email}  |  ${_contatos[i].telefone}');
 
         achou = true;
         }
@@ -127,9 +186,9 @@ class Agenda {
 
   bool existe(String nome) {
 
-    for (int i = 0; i < contatos.length; i++) {
+    for (int i = 0; i < _contatos.length; i++) {
 
-        if (contatos[i].nome.toLowerCase() == nome.toLowerCase()) {
+        if (_contatos[i].nome.toLowerCase() == nome.toLowerCase()) {
             return true;
         }
     }
@@ -178,4 +237,5 @@ class Agenda {
 
 
   }
+  
 }
