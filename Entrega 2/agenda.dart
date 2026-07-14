@@ -1,241 +1,256 @@
+
 import 'dart:io';
+
 import 'Contatos/contato.dart';
 import 'Contatos/contato_empresarial.dart';
 import 'Contatos/contato_pessoal.dart';
 
 class Agenda {
 
+  final List<Contato> _contatos = [];
 
-  List<Contato> _contatos = [];
-  
 
-  bool IndiceValido(int i) {
-  return (i >= 0 && i < _contatos.length);
+  bool indiceValido(int i) {
+    return i >= 0 && i < _contatos.length;
   }
 
   void listarContatos() {
 
-  if(_contatos.isEmpty) {
-    print('Não possui contado a ser listado');
+    if (_contatos.isEmpty) {
+      print('⚠️ Nenhum contato cadastrado.');
+      return;
+    }
+
+    for (int i = 0; i < _contatos.length; i++) {
+      print('\nContato $i');
+      _contatos[i].imprimirDetalhe();
+    }
+  }
+
+ void criarContato() {
+
+  stdout.write('Tipo (1-Pessoal | 2-Empresarial): ');
+  String tipo = stdin.readLineSync() ?? '';
+
+  stdout.write('Nome: ');
+  String nome = stdin.readLineSync() ?? '';
+
+  if (existe(nome)) {
+    print('❌ Nome já cadastrado!');
     return;
   }
 
-  for (int i = 0; i < _contatos.length; i++) {
-
-    if (_contatos[i] is ContatoPessoal) {
-      ContatoPessoal contato = _contatos[i] as ContatoPessoal;
-
-      print(
-        '$i - Nome: ${contato.nome} | E-mail: ${contato.email} | Telefone: ${contato.telefone} | CPF: ${contato.cpf}'
-      );
-    } else if (_contatos[i] is ContatoEmpresarial) {
-      ContatoEmpresarial contato = _contatos[i] as ContatoEmpresarial;
-
-      print(
-        '$i - Nome Fantasia: ${contato.nomeFantasia} | Nome: ${contato.nome} | E-mail: ${contato.email} | Telefone: ${contato.telefone} | CNPJ: ${contato.cnpj}'
-      );
-    }
-  }
-
-  }
-
-  void criarContato(){
-
-    stdout.write('Qual o tipo de contato? ( 1 - Pessoal | 2 - Empresarial): ');
-    String tipo = stdin.readLineSync() ?? ""; 
-
-    stdout.write('Qual seu nome? ');
-    String nome = stdin.readLineSync() ?? '';
-
-    if(existe(nome)) {
-        print('❌ Nome já cadastrado!');
-        return;
-    }
-
   String email = validarEmail();
-  stdout.write('Qual seu telefone? ');
   String telefone = validarTelefone();
 
-  if (tipo == '1') {
-    stdout.write('CPF: ');
-    String cpf = stdin.readLineSync() ?? '';
 
-    _contatos.add(
-      ContatoPessoal(nome, email, telefone, cpf)
-    );
+  switch(tipo) {
 
-    } else if (tipo == '2') {
+    case '1':
+
+      stdout.write('CPF: ');
+      String cpf = stdin.readLineSync() ?? '';
+
+      _contatos.add(
+        ContatoPessoal(
+          nome,
+          email,
+          telefone,
+          cpf,
+        )
+      );
+
+      return;
+
+
+    case '2':
+
       stdout.write('CNPJ: ');
       String cnpj = stdin.readLineSync() ?? '';
-      
+
       stdout.write('Nome Fantasia: ');
       String nomeFantasia = stdin.readLineSync() ?? '';
 
       _contatos.add(
-        ContatoEmpresarial(nome, email, telefone, cnpj, nomeFantasia)
-    );
-  } else {
-    print('❌ Nome já cadastrado!');
+        ContatoEmpresarial(
+          nome,
+          email,
+          telefone,
+          cnpj,
+          nomeFantasia,
+        )
+      );
+
+      return;
+
+
+    default:
+
+      print('❌ Tipo inválido.');
+      return;
   }
 
-  print('✅ Contato adcionado.');
-
+  print('✅ Contato adicionado.');
 }
 
   void editarContato() {
 
     listarContatos();
 
-    stdout.write('Digite: ');
-    int indice = int.tryParse(stdin.readLineSync() ?? '') ?? - 1;
+    stdout.write('Digite o índice: ');
+    int indice = int.tryParse(stdin.readLineSync() ?? '') ?? -1;
 
-    if (!IndiceValido(indice)) {
-        print('❌ Invalido');
-        return;
+
+    if (!indiceValido(indice)) {
+      print('❌ Índice inválido.');
+      return;
     }
 
-  stdout.write('Novo nome: ');
-  String novoNome = stdin.readLineSync() ?? '';
 
-  stdout.write('Novo email: ');
-  String novoEmail = stdin.readLineSync() ?? '';
-
-  stdout.write('Novo telefone: ');
-  String novoTelefone = stdin.readLineSync() ?? '';
-
-  _contatos[indice].nome = novoNome;
-  _contatos[indice].email = novoEmail;
-  _contatos[indice].telefone = novoTelefone;
+    stdout.write('Novo nome: ');
+    _contatos[indice].nome = stdin.readLineSync() ?? '';
 
 
+    _contatos[indice].email = validarEmail();
 
-    if(_contatos[indice] is ContatoPessoal) {
-      ContatoPessoal contato = _contatos[indice] as ContatoPessoal;
 
-      stdout.write('Novo CPF: ');
-      String novoCPF = stdin.readLineSync() ?? '';
+    stdout.write('Novo telefone: ');
+    _contatos[indice].telefone = stdin.readLineSync() ?? '';
 
-      contato.cpf = novoCPF;
 
-    } else if(_contatos[indice] is ContatoEmpresarial) {
-      ContatoEmpresarial contato = _contatos[indice] as ContatoEmpresarial;
+    if (_contatos[indice] is ContatoPessoal) {
 
-      stdout.write('Novo nome fantasia: ');
-      String novoNomeFantasia = stdin.readLineSync() ?? '';
+      var contato = _contatos[indice] as ContatoPessoal;
 
-      stdout.write('Novo CNPJ: ');
-      String novoCnpj = stdin.readLineSync() ?? '';
+      stdout.write('Novo apelido: ');
+      contato.nome = stdin.readLineSync() ?? '';
 
-      contato.nomeFantasia = novoNomeFantasia;
-      contato.cnpj = novoCnpj;
+    }
+
+
+    if (_contatos[indice] is ContatoEmpresarial) {
+
+      var contato = _contatos[indice] as ContatoEmpresarial;
+
+      stdout.write('Nova empresa: ');
+      contato.nomeFantasia = stdin.readLineSync() ?? '';
+
+    }
+
+
+    print('✅ Atualizado com sucesso.');
   }
-    print('✅ Atualizado com sucesso!');
-
-}
 
   void deletarContato() {
 
     listarContatos();
 
-    stdout.write('Digite: ');
-    int indice = int.tryParse(stdin.readLineSync() ?? '') ?? - 1;
+    stdout.write('Digite o índice: ');
+    int indice = int.tryParse(stdin.readLineSync() ?? '') ?? -1;
 
-    if (!IndiceValido(indice)) {
-        print('❗Invalido');
-        return;
+
+    if (!indiceValido(indice)) {
+      print('❌ Índice inválido.');
+      return;
     }
 
-    stdout.write('Certeza que deseja deletar? ( s/n ) ');
-    String confirmacao = (stdin.readLineSync() ?? '').toLowerCase();
 
-    if (confirmacao != 's') {
-        print('⚠️  Exclusão cancelada');
-        return;
+    stdout.write('Confirma exclusão? (s/n): ');
+    String resposta = stdin.readLineSync()?.toLowerCase() ?? '';
+
+
+    if (resposta == 's') {
+
+      _contatos.removeAt(indice);
+      print('✅ Removido com sucesso.');
+
+    } else {
+
+      print('⚠️ Cancelado.');
 
     }
 
-    _contatos.removeAt(indice);
+  }
 
-    print('✅ Removido com sucesso');
-
-}
-
-  void buscaContato() {
-
-        stdout.write('Busque contato: ');
-    String busca = (stdin.readLineSync() ?? '').toLowerCase();
-
-    bool achou = false;
-
-    for (int i = 0; i < _contatos.length; i++) {
-
-        if  (_contatos[i].nome.toLowerCase().contains(busca)){
-
-        print('$i - ${_contatos[i].nome}  |  ${_contatos[i].email}  |  ${_contatos[i].telefone}');
-
-        achou = true;
-        }
-    }
-
-    if (!achou){
-        print('⚠️ Nenhum registro encontrado');
-    }
+  void buscarContato() {
     
+  stdout.write('Buscar: ');
+  String busca = stdin.readLineSync()?.toLowerCase() ?? '';
+
+  bool encontrado = false;
+
+
+  for (var contato in _contatos) {
+
+    if (contato.nome.toLowerCase().contains(busca)) {
+
+      contato.imprimirDetalhe();
+      encontrado = true;
+
+    }
+
+  }
+
+
+  if (!encontrado) {
+    print('⚠️ Nenhum contato encontrado.');
+  }
 
 }
 
   bool existe(String nome) {
 
-    for (int i = 0; i < _contatos.length; i++) {
+    return _contatos.any(
+      (contato) =>
+        contato.nome.toLowerCase() == nome.toLowerCase()
+    );
 
-        if (_contatos[i].nome.toLowerCase() == nome.toLowerCase()) {
-            return true;
-        }
-    }
-
-    return false;
-}
+  }
 
   String validarEmail() {
-  String email = '';
-  bool emailValido = false;
- 
-  while (!emailValido) {
-    stdout.write('Email: ');
-    email = stdin.readLineSync() ?? '';
- 
-    if (!RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    ).hasMatch(email)) {
-      print('❌ E-mail inválido');
-      continue;
-    }
-    emailValido = true;
-  }
-  return email;
 
-}
+    while(true) {
+
+      stdout.write('Email: ');
+      String email = stdin.readLineSync() ?? '';
+
+
+      if(RegExp(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+      ).hasMatch(email)) {
+
+        return email;
+
+      }
+
+
+      print('❌ Email inválido.');
+
+    }
+
+  }
 
   String validarTelefone() {
 
     while(true) {
 
-    stdout.write('Digite o telefone: ');
-    String telefone = stdin.readLineSync() ?? '';
+      stdout.write('Telefone: ');
+      String telefone = stdin.readLineSync() ?? '';
 
-    if (!RegExp(
-      r'^(?:\+55\s?)?(?:\(?\d{2}\)?\s?)?(?:9\d{4}[-\s]?\d{4}|\d{4}[-\s]?\d{4})$'
-    ).hasMatch(telefone)) {
 
-        print('❌ Telefone inválido');
-        continue;
+      if(RegExp(
+        r'^(?:\+55\s?)?(?:\(?\d{2}\)?\s?)?(?:9\d{4}[-\s]?\d{4}|\d{4}[-\s]?\d{4})$'
+      ).hasMatch(telefone)) {
+
+        return telefone;
+
+      }
+
+
+      print('❌ Telefone inválido.');
+
     }
-
-    return telefone;
-
-    }
-
 
   }
-  
+
 }

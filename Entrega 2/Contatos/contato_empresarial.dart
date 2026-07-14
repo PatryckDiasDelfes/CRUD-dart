@@ -13,4 +13,15 @@ class ContatoEmpresarial extends Contato{
     this.nomeFantasia
   );
 
+  @override
+  void imprimirDetalhe() {
+    print('''
+    Nome: $nome
+    Email: $email
+    Telefone: $telefone
+    Cnpj: $cnpj
+    Nome fantasia: $nomeFantasia
+    ''');
+  }
+
 }
