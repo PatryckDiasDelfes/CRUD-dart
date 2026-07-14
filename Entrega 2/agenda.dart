@@ -22,9 +22,6 @@ class Agenda {
 
   for (int i = 0; i < _contatos.length; i++) {
 
-  print('$i - ');
-  _contatos[i].imprimirDetalhe();
-
 }
 
   }
