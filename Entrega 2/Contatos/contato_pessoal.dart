@@ -8,7 +8,7 @@ class ContatoPessoal extends Contato {
     super.nome,
     super.email,
     super.telefone,
-    this.cpf,
+    this.cpf
   );
 
 
@@ -20,14 +20,5 @@ class ContatoPessoal extends Contato {
       Telefone: $telefone
       CPF: $cpf
       ''');
-   @override
-  void imprimirDetalhe() {
-    print('''
-    Nome: $nome
-    Email: $email
-    Telefone: $telefone
-    Cpf: $cpf
-    ''');
   }
-
 }
