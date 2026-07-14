@@ -1,3 +1,4 @@
+
 class Contato {
 
     String nome;
