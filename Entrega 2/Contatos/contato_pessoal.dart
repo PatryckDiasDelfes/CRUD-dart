@@ -1,6 +1,7 @@
 import 'contato.dart';
 
 class ContatoPessoal extends Contato {
+
   String cpf;
 
   ContatoPessoal(
@@ -10,6 +11,15 @@ class ContatoPessoal extends Contato {
     this.cpf,
   );
 
+
+  @override
+  void imprimirDetalhe() {
+    print('''
+      Nome: $nome
+      Email: $email
+      Telefone: $telefone
+      CPF: $cpf
+      ''');
    @override
   void imprimirDetalhe() {
     print('''
