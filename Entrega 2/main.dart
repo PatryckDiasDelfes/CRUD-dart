@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'agenda.dart';
+import 'Contatos/contato.dart';
 
 void main() {
 
