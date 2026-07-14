@@ -7,13 +7,5 @@ abstract class Contato {
   Contato(this.nome, this.email, this.telefone);
 
   void imprimirDetalhe();
-
-class Contato {
-
-    String nome;
-    String email;
-    String telefone;
-
-    Contato(this.nome, this.email, this.telefone);
-
+  
 }
